@@ -1,4 +1,4 @@
-# pokesearch
+# PokeSearch
 
 Prueba técnica para Pikotea Software de Pedro González Fernández
 
