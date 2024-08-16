@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pokesearch/utils/theme_colors.dart';
 
+import '../pokeapi/api/api_service.dart';
+import '../pokeapi/class/api_pokemon.dart';
+
 // Pantalla de busqueda y filtro de pokemon
 class PkmnGrid extends StatefulWidget {
   const PkmnGrid({super.key});
@@ -19,6 +22,7 @@ class _PkmnGridState extends State<PkmnGrid> {
   String appBarTitle = "PokeSearch";
   TextEditingController search = TextEditingController();
   bool favsOn = false;
+  late ApiPokemon infoPokemon;
 
   @override
   Widget build(BuildContext context) {
@@ -34,35 +38,7 @@ class _PkmnGridState extends State<PkmnGrid> {
           child: Column(
             children: [
               searchBar(context),
-              Expanded(
-                  child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 1,
-                          crossAxisSpacing: 1,
-                          childAspectRatio: 0.8
-                      ),
-                      itemCount: 20,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          color: ThemeColors().blue,
-                          child: Column(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.popAndPushNamed(context, '/pkm_details');
-                                  },
-                                  icon: Image.asset("lib/assets/splashImage.png", width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * 0.2,)),
-                              Text(
-                                (1 * index).toString(),
-                                style: TextStyle(color: ThemeColors().yellow),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                  )
-              )
+              futureGridPokemon()
             ]
           )
         ),
@@ -101,6 +77,55 @@ class _PkmnGridState extends State<PkmnGrid> {
             icon: favsOn ? Icon(Icons.star, color: ThemeColors().yellow, size: 50) : Icon(Icons.star_border, color: ThemeColors().gray,  size: 50)
         )
       ],
+    );
+  }
+
+  FutureBuilder<ApiPokemon> futureGridPokemon() {
+    return FutureBuilder(
+      future: ApiService().getPokemons(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          infoPokemon = snapshot.data!;
+          return Expanded(
+            child: GridView.builder(
+
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 1,
+                    crossAxisSpacing: 1,
+                    childAspectRatio: 0.8
+                ),
+                itemCount: infoPokemon.results.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: ThemeColors().blue,
+                    child: Column(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.popAndPushNamed(context, '/pkm_details');
+                            },
+                            icon: Image.asset("lib/assets/splashImage.png", width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * 0.2,)),
+                        Text(
+                          infoPokemon.results[index].name,
+                          style: TextStyle(color: ThemeColors().yellow),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+            ),
+          );
+        }else{
+          if(snapshot.hasError){
+            //Navigator.pop(context);
+          }
+          return const  Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+
     );
   }
 

@@ -1,0 +1,35 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../class/api_pokemon.dart';
+
+
+class ApiService with ChangeNotifier{
+
+  final url = "https://pokeapi.co/api/v2/pokemon";
+
+  Future<ApiPokemon> getPokemons() async {
+
+
+    final resultData = await http.get(
+      Uri.parse(url)
+    );
+
+    final statusCode = resultData.statusCode;
+
+
+    if(statusCode == 200) {
+      final body = resultData.body;
+      final jsonMap = jsonDecode(body);
+      ApiPokemon data = ApiPokemon.fromJson(jsonMap);
+
+      return data;
+
+    }else{
+      throw HttpException('$statusCode');
+    }
+  }
+}
