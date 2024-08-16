@@ -53,7 +53,6 @@ class _PkmnGridState extends State<PkmnGrid> {
   Row searchBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
       children: [
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.7,
@@ -80,6 +79,10 @@ class _PkmnGridState extends State<PkmnGrid> {
     );
   }
 
+  /*
+    Método que recoge toda la creacion y estilo de tarjteas
+    para mostrar imagen y nombre de los pokemon
+   */
   FutureBuilder<ApiPokemon> futureGridPokemon() {
     return FutureBuilder(
       future: ApiService().getPokemons(),

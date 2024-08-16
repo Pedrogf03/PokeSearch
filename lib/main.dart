@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokesearch/screens/pkmn_details.dart';
 import 'package:pokesearch/screens/pkmn_grid.dart';
 import 'package:pokesearch/splash/splash_screen.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/' : (context) => const SplashScreen(), // Pantalla de landing
         '/pkm_grid' : (context) => const PkmnGrid(), // Pantalla de listado y búsqueda de pokemon
+        '/pkm_details' : (context) => const PkmDetails() // Pantalla de detalles de un pokemon
       }
     );
   }
