@@ -34,6 +34,35 @@ class _PkmnGridState extends State<PkmnGrid> {
           child: Column(
             children: [
               searchBar(context),
+              Expanded(
+                  child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 1,
+                          crossAxisSpacing: 1,
+                          childAspectRatio: 0.8
+                      ),
+                      itemCount: 20,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          color: ThemeColors().blue,
+                          child: Column(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.popAndPushNamed(context, '/pkm_details');
+                                  },
+                                  icon: Image.asset("lib/assets/splashImage.png", width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * 0.2,)),
+                              Text(
+                                (1 * index).toString(),
+                                style: TextStyle(color: ThemeColors().yellow),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                  )
+              )
             ]
           )
         ),
