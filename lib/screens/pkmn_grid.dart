@@ -81,7 +81,7 @@ class _PkmnGridState extends State<PkmnGrid> {
 
   /*
     Método que recoge toda la creacion y estilo de tarjteas
-    para mostrar imagen y nombre de los pokemon
+    para mostrar imagen y nombre de los pokemon sacados de la api
    */
   FutureBuilder<ApiPokemon> futureGridPokemon() {
     return FutureBuilder(
@@ -106,7 +106,7 @@ class _PkmnGridState extends State<PkmnGrid> {
                       children: [
                         IconButton(
                             onPressed: () {
-                              Navigator.popAndPushNamed(context, '/pkm_details');
+                              Navigator.popAndPushNamed(context, '/pkm_details', arguments: {'pkmn_name': infoPokemon.results[index].name});
                             },
                             icon: Image.asset("lib/assets/splashImage.png", width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * 0.2,)),
                         Text(

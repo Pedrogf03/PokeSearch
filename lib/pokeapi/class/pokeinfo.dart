@@ -1,31 +1,26 @@
 class Pokeinfo {
   String name;
   List<Ability> abilities;
-  List<Sprite> sprites;
+  String sprite;
 
-  Pokeinfo({required this.name, required this.abilities, required this.sprites});
+  Pokeinfo({required this.name, required this.abilities, required this.sprite});
 
   factory Pokeinfo.fromJson(Map<String, Object?> jsonMap) {
-    List<Ability> pkmnAbilities = [];
-    dynamic abilitiesMap  = jsonMap['abilities'];
+    List<Ability>? pkmnAbilities = [];
+    dynamic abilitiesMap = jsonMap['abilities'];
 
     for(var item in abilitiesMap) {
-      Ability sesion = Ability.fromJson(item);
+      Ability sesion = Ability.fromJson(item['ability'] as Map<String, Object?>);
       pkmnAbilities.add(sesion);
     }
 
-    List<Sprite> pkmnSprites = [];
-    dynamic spritesMap  = jsonMap['sprites'];
-
-    for(var item in spritesMap) {
-      Sprite sesion = Sprite.fromJson(item);
-      spritesMap.add(sesion);
-    }
+    dynamic spritesMap = jsonMap['sprites'];
+    String frontDefaultSprite = spritesMap['front_default'] as String;
 
     return Pokeinfo(
       name: jsonMap['name'] as String,
       abilities: pkmnAbilities,
-      sprites: pkmnSprites
+      sprite: frontDefaultSprite
     );
   }
 }
