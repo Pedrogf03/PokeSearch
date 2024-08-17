@@ -53,7 +53,7 @@ class _PkmDetailsState extends State<PkmDetails> {
         if (snapshot.hasData) {
           pokemon = snapshot.data!;
           return Expanded(
-            child: Row(
+            child: Column(
               children: [
                 Image.network(
                   pokemon.sprite,

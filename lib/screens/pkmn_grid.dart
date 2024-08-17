@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pokesearch/pokeapi/class/pokeinfo.dart';
 import 'package:pokesearch/utils/theme_colors.dart';
 
 import '../pokeapi/api/api_service.dart';
@@ -80,8 +81,8 @@ class _PkmnGridState extends State<PkmnGrid> {
   }
 
   /*
-    Método que recoge toda la creacion y estilo de tarjteas
-    para mostrar imagen y nombre de los pokemon sacados de la api
+    Método que recoge toda la creacion y estilo del grid el cual
+    recoge todos los pokemon
    */
   FutureBuilder<ApiPokemon> futureGridPokemon() {
     return FutureBuilder(
@@ -95,31 +96,20 @@ class _PkmnGridState extends State<PkmnGrid> {
                   maxCrossAxisExtent: 400,
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 0.6,
                 ),
                 itemCount: infoPokemon.results.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    color: ThemeColors().blue,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.popAndPushNamed(context, '/pkm_details', arguments: {'pkmn_name': infoPokemon.results[index].name});
-                            },
-                            icon: Image.asset(
-                              "lib/assets/splashImage.png",
-                              fit: BoxFit.contain,
-                            )
-                        ),
-                        Text(
-                        '${infoPokemon.results[index].name[0].toUpperCase()}${infoPokemon.results[index].name.substring(1)}',
-                          style: TextStyle(color: ThemeColors().yellow),
-                        ),
-                      ],
-                    ),
+                  return FutureBuilder(
+                      future: ApiService().getPokemon(infoPokemon.results[index].name),
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData) {
+                          Pokeinfo pokemon = snapshot.data!;
+                          return pokemonCard(context, pokemon);
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      }
                   );
                 }
             ),
@@ -137,4 +127,44 @@ class _PkmnGridState extends State<PkmnGrid> {
     );
   }
 
+  /*
+    Metodo que recoge la creacion y estilo de la carta que contiene un pokemon
+   */
+  Card pokemonCard(BuildContext context, Pokeinfo pokemon) {
+    return Card(
+      color: ThemeColors().blue,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: () {
+              Navigator.popAndPushNamed(
+                context,
+                '/pkm_details',
+                arguments: {'pkmn_name': pokemon.name},
+              );
+            },
+            icon: Center(
+              child: Image.network(
+                pokemon.sprite,
+                fit: BoxFit.contain,
+                width: MediaQuery.of(context).size.width * 0.3,
+                height: MediaQuery.of(context).size.width * 0.3,
+              ),
+            ),
+          ),
+          Text(
+            '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
+            style: TextStyle(color: ThemeColors().yellow),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
+
+/*
+
+ */
