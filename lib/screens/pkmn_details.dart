@@ -42,6 +42,10 @@ class _PkmDetailsState extends State<PkmDetails> {
     );
   }
 
+  /*
+    Método encargado de cargar y mostrar los datos de un pokemon
+    sacado de la api
+   */
   FutureBuilder<Pokeinfo> futurePokeInfo(String name) {
     return FutureBuilder(
       future: ApiService().getPokemon(name),
@@ -49,19 +53,30 @@ class _PkmDetailsState extends State<PkmDetails> {
         if (snapshot.hasData) {
           pokemon = snapshot.data!;
           return Expanded(
-            child: Text(pokemon.name)
+            child: Row(
+              children: [
+                Image.network(
+                  pokemon.sprite,
+                  width: 100,
+                  height: 100,
+                ),
+                Text(
+                  '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
+                ),
+              ],
+            ),
           );
-        }else{
-          if(snapshot.hasError){
+        } else {
+          if (snapshot.hasError) {
             //Navigator.pop(context);
           }
-          return const  Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
       },
-
     );
   }
+
 
 }

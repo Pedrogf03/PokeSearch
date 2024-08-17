@@ -91,26 +91,31 @@ class _PkmnGridState extends State<PkmnGrid> {
           infoPokemon = snapshot.data!;
           return Expanded(
             child: GridView.builder(
-
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 1,
-                    crossAxisSpacing: 1,
-                    childAspectRatio: 0.8
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 400,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 0.8,
                 ),
                 itemCount: infoPokemon.results.length,
                 itemBuilder: (context, index) {
                   return Card(
                     color: ThemeColors().blue,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         IconButton(
                             onPressed: () {
                               Navigator.popAndPushNamed(context, '/pkm_details', arguments: {'pkmn_name': infoPokemon.results[index].name});
                             },
-                            icon: Image.asset("lib/assets/splashImage.png", width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * 0.2,)),
+                            icon: Image.asset(
+                              "lib/assets/splashImage.png",
+                              fit: BoxFit.contain,
+                            )
+                        ),
                         Text(
-                          infoPokemon.results[index].name,
+                        '${infoPokemon.results[index].name[0].toUpperCase()}${infoPokemon.results[index].name.substring(1)}',
                           style: TextStyle(color: ThemeColors().yellow),
                         ),
                       ],
