@@ -54,7 +54,6 @@ class _PkmDetailsState extends State<PkmDetails> {
         }else{
           if(snapshot.hasError){
             //Navigator.pop(context);
-            print(snapshot.stackTrace);
           }
           return const  Center(
             child: CircularProgressIndicator(),
