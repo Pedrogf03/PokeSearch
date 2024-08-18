@@ -24,6 +24,23 @@ class _PkmnGridState extends State<PkmnGrid> {
   TextEditingController search = TextEditingController();
   bool favsOn = false;
   late ApiPokemon infoPokemon;
+  String? customUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    customUrl = null;
+  }
+
+  void searchPokemon(String pokeName) {
+
+    Navigator.popAndPushNamed(
+      context,
+      '/pkm_details',
+      arguments: {'pkmn_name': pokeName.toLowerCase()},
+    );
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +76,20 @@ class _PkmnGridState extends State<PkmnGrid> {
           width: MediaQuery.of(context).size.width * 0.7,
           child: TextFormField(
             controller: search,
-            key: UniqueKey(),
             autocorrect: true,
-            decoration: const InputDecoration(
+            textInputAction: TextInputAction.search,
+            onFieldSubmitted: (String query) {
+              searchPokemon(query);
+            },
+            decoration: InputDecoration(
               hintText: "Busca un Pokémon",
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(),
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    searchPokemon(search.text);
+                  },
+                  icon: const Icon(Icons.search)
+              ),
+              border: const OutlineInputBorder(),
             ),
           ),
         ),
@@ -86,46 +111,73 @@ class _PkmnGridState extends State<PkmnGrid> {
    */
   FutureBuilder<ApiPokemon> futureGridPokemon() {
     return FutureBuilder(
-      future: ApiService().getPokemons(),
+      future: Future.delayed(const Duration(milliseconds: 150))
+          .then((_) => ApiService().getPokemons(customUrl)),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           infoPokemon = snapshot.data!;
           return Expanded(
-            child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 400,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  childAspectRatio: 0.6,
+            child: Column(
+              children: [
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 400,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 0.6,
+                    ),
+                    itemCount: infoPokemon.results.length,
+                    itemBuilder: (context, index) {
+                      return FutureBuilder(
+                        future: ApiService().getPokemon(infoPokemon.results[index].name),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            Pokeinfo pokemon = snapshot.data!;
+                            return pokemonCard(context, pokemon);
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      );
+                    },
+                  ),
                 ),
-                itemCount: infoPokemon.results.length,
-                itemBuilder: (context, index) {
-                  return FutureBuilder(
-                      future: ApiService().getPokemon(infoPokemon.results[index].name),
-                      builder: (context, snapshot) {
-                        if(snapshot.hasData) {
-                          Pokeinfo pokemon = snapshot.data!;
-                          return pokemonCard(context, pokemon);
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      }
-                  );
-                }
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    if (infoPokemon.previous != null)
+                      IconButton(
+                        icon: const Icon(Icons.arrow_left, size: 50),
+                        onPressed: () {
+                          setState(() {
+                            customUrl = infoPokemon.previous;
+                          });
+                        },
+                      ),
+                    if (infoPokemon.next != null)
+                      IconButton(
+                        icon: const Icon(Icons.arrow_right, size: 50),
+                        onPressed: () {
+                          setState(() {
+                            customUrl = infoPokemon.next;
+                          });
+                        },
+                      ),
+                  ],
+                )
+              ],
             ),
           );
-        }else{
-          if(snapshot.hasError){
-            //Navigator.pop(context);
-          }
-          return const  Center(
-            child: CircularProgressIndicator(),
-          );
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error al cargar los datos'));
+        } else {
+          return const Center(child: CircularProgressIndicator());
         }
       },
-
     );
   }
+
 
   /*
     Metodo que recoge la creacion y estilo de la carta que contiene un pokemon
@@ -164,7 +216,3 @@ class _PkmnGridState extends State<PkmnGrid> {
   }
 
 }
-
-/*
-
- */

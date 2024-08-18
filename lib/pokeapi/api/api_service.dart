@@ -12,10 +12,12 @@ class ApiService with ChangeNotifier{
 
   final url = "https://pokeapi.co/api/v2/pokemon";
 
-  Future<ApiPokemon> getPokemons() async {
+  Future<ApiPokemon> getPokemons(String? customUrl) async {
+
+    customUrl ??= url;
 
     final resultData = await http.get(
-      Uri.parse(url)
+      Uri.parse(customUrl)
     );
 
     final statusCode = resultData.statusCode;

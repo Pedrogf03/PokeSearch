@@ -52,24 +52,34 @@ class _PkmDetailsState extends State<PkmDetails> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           pokemon = snapshot.data!;
-          return Expanded(
-            child: Column(
-              children: [
-                Image.network(
-                  pokemon.sprite,
-                  width: 100,
-                  height: 100,
-                ),
-                Text(
-                  '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
-                ),
-              ],
-            ),
+          return Column(
+            children: [
+              Image.network(
+                pokemon.sprite,
+                width: 100,
+                height: 100,
+              ),
+              Text(
+                '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
+              ),
+            ],
           );
+        } else if (snapshot.hasError){
+            if(snapshot.error.toString() == "HttpException: 404") {
+              return const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error),
+                  Text("Pokemon no encontrado")
+                ],
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
         } else {
-          if (snapshot.hasError) {
-            //Navigator.pop(context);
-          }
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -78,5 +88,23 @@ class _PkmDetailsState extends State<PkmDetails> {
     );
   }
 
-
 }
+
+
+/*
+print(snapshot.error);
+            if(snapshot.error == "HttpException: 404") {
+              return const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error),
+                  Text("Pokemon no encontrado")
+                ],
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+ */
