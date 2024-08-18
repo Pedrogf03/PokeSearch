@@ -53,4 +53,24 @@ class ApiService with ChangeNotifier{
       throw HttpException('$statusCode');
     }
   }
+
+  Future<Pokeinfo> getFavoritePokemon(String name) async {
+
+    final resultData = await http.get(
+        Uri.parse("$url/$name")
+    );
+
+    final statusCode = resultData.statusCode;
+
+    if(statusCode == 200) {
+      final body = resultData.body;
+      final jsonMap = jsonDecode(body);
+      Pokeinfo data = Pokeinfo.fromJson(jsonMap);
+
+      return data;
+
+    }else{
+      throw HttpException('$statusCode');
+    }
+  }
 }

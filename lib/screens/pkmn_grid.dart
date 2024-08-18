@@ -26,6 +26,7 @@ class _PkmnGridState extends State<PkmnGrid> {
   bool favsOn = false;
   late ApiPokemon infoPokemon;
   String? customUrl;
+  late List<Pokeinfo> favoritePokemon = [];
 
   @override
   void initState() {
@@ -33,27 +34,7 @@ class _PkmnGridState extends State<PkmnGrid> {
     customUrl = null;
   }
 
-  /*
-    Metodo que se encarga de la busqueda
-    de un pokemon por su nombre
-   */
-  void searchPokemon(String pokeName) {
-    Navigator.popAndPushNamed(
-      context,
-      '/pkm_details',
-      arguments: {'pkmn_name': pokeName.toLowerCase()},
-    );
-  }
 
-  /*
-    Metodo que muestra los pokemon almacenados en favoritos
-   */
-  void getFavorites() async {
-    final favorites = await FavoritesService().getFavorites();
-    for(final favorites in favorites) {
-      print(favorites);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +58,33 @@ class _PkmnGridState extends State<PkmnGrid> {
     );
   }
 
+  /*
+    Metodo que se encarga de la busqueda
+    de un pokemon por su nombre
+   */
+  void searchPokemon(String pokeName) {
+    Navigator.popAndPushNamed(
+      context,
+      '/pkm_details',
+      arguments: {'pkmn_name': pokeName.toLowerCase()},
+    );
+  }
+
+  /*
+  Metodo que muestra los pokemon almacenados en favoritos
+*/
+  void getFavorites() async {
+    final favorites = await FavoritesService().getFavorites();
+
+    for (final favorite in favorites) {
+      final pokemon = await ApiService().getPokemon(favorite);
+      favoritePokemon.add(pokemon);
+    }
+
+    for (final p in favoritePokemon) {
+      print(p.name);
+    }
+  }
   /*
     Método que recoge toda la creación y estilo de
     la barra de búsqueda y filtro de favoritos
@@ -113,6 +121,9 @@ class _PkmnGridState extends State<PkmnGrid> {
                 if(favsOn) {
                   getFavorites();
                 }
+                else {
+                  favoritePokemon.clear();
+                }
               });
             },
             icon: favsOn ? Icon(Icons.star, color: ThemeColors().yellow, size: 50) : Icon(Icons.star_border, color: ThemeColors().gray,  size: 50)
@@ -121,17 +132,28 @@ class _PkmnGridState extends State<PkmnGrid> {
     );
   }
 
+
+
   /*
     Método que recoge toda la creacion y estilo del grid el cual
     recoge todos los pokemon
    */
-  FutureBuilder<ApiPokemon> futureGridPokemon() {
+  FutureBuilder<dynamic> futureGridPokemon() {
+
     return FutureBuilder(
       future: Future.delayed(const Duration(milliseconds: 150))
-          .then((_) => ApiService().getPokemons(customUrl)),
+          .then((_) {
+            if (favsOn) {
+              return Future.value(favoritePokemon); // Asegúrate que favoritePokemon es de tipo ApiPokemon
+            } else {
+            return ApiService().getPokemons(customUrl);
+            }
+      }),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          infoPokemon = snapshot.data!;
+          if(!favsOn) {
+            infoPokemon = snapshot.data!;
+          }
           return Expanded(
             child: Column(
               children: [
@@ -143,10 +165,10 @@ class _PkmnGridState extends State<PkmnGrid> {
                       crossAxisSpacing: 8,
                       childAspectRatio: 0.6,
                     ),
-                    itemCount: infoPokemon.results.length,
+                    itemCount: favsOn ? favoritePokemon.length : infoPokemon.results.length,
                     itemBuilder: (context, index) {
                       return FutureBuilder(
-                        future: ApiService().getPokemon(infoPokemon.results[index].name),
+                        future: ApiService().getPokemon(favsOn ? favoritePokemon[index].name : infoPokemon.results[index].name),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             Pokeinfo pokemon = snapshot.data!;
