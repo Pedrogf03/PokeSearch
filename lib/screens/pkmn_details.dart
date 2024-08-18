@@ -97,23 +97,40 @@ class _PkmDetailsState extends State<PkmDetails> {
     sacado de la api
    */
   FutureBuilder<Pokeinfo> futurePokeInfo(String name) {
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final bool favSearch = arguments['favSearch'];
     return FutureBuilder(
       future: ApiService().getPokemon(name),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           pokemon = snapshot.data!;
-          return Column(
-            children: [
-              Image.network(
-                pokemon.sprite,
-                width: 100,
-                height: 100,
+          if(favSearch && !favsOn) {
+            return SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.error),
+                  Text("No tienes este pokemon en favoritos")
+                ],
               ),
-              Text(
-                '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
-              ),
-            ],
-          );
+            );
+          } else {
+            return Column(
+              children: [
+                Image.network(
+                  pokemon.sprite,
+                  width: 100,
+                  height: 100,
+                ),
+                Text(
+                  '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
+                ),
+              ],
+            );
+          }
         } else if (snapshot.hasError){
           return SizedBox(
             height: MediaQuery.of(context).size.height,

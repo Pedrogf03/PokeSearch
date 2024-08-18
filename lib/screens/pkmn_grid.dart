@@ -34,8 +34,6 @@ class _PkmnGridState extends State<PkmnGrid> {
     customUrl = null;
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,13 +64,13 @@ class _PkmnGridState extends State<PkmnGrid> {
     Navigator.popAndPushNamed(
       context,
       '/pkm_details',
-      arguments: {'pkmn_name': pokeName.toLowerCase()},
+      arguments: {'pkmn_name': pokeName.toLowerCase(), 'favSearch': favsOn},
     );
   }
 
   /*
-  Metodo que muestra los pokemon almacenados en favoritos
-*/
+    Metodo que muestra los pokemon almacenados en favoritos
+  */
   void getFavorites() async {
     final favorites = await FavoritesService().getFavorites();
 
@@ -80,11 +78,8 @@ class _PkmnGridState extends State<PkmnGrid> {
       final pokemon = await ApiService().getPokemon(favorite);
       favoritePokemon.add(pokemon);
     }
-
-    for (final p in favoritePokemon) {
-      print(p.name);
-    }
   }
+
   /*
     Método que recoge toda la creación y estilo de
     la barra de búsqueda y filtro de favoritos
@@ -151,9 +146,14 @@ class _PkmnGridState extends State<PkmnGrid> {
       }),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if(!favsOn) {
-            infoPokemon = snapshot.data!;
+          try {
+            if (!favsOn) {
+              infoPokemon = snapshot.data!;
+            }
+          } catch (e) {
+            //ignore
           }
+
           return Expanded(
             child: Column(
               children: [
