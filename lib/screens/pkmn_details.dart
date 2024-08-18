@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokesearch/pokeapi/class/pokeinfo.dart';
+
 import '../pokeapi/api/api_service.dart';
 import '../utils/theme_colors.dart';
 
@@ -65,20 +66,18 @@ class _PkmDetailsState extends State<PkmDetails> {
             ],
           );
         } else if (snapshot.hasError){
-            if(snapshot.error.toString() == "HttpException: 404") {
-              return const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error),
-                  Text("Pokemon no encontrado")
-                ],
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.error),
+                Text("Pokemon no encontrado")
+              ],
+            ),
+          );
         } else {
           return const Center(
             child: CircularProgressIndicator(),
@@ -89,22 +88,3 @@ class _PkmDetailsState extends State<PkmDetails> {
   }
 
 }
-
-
-/*
-print(snapshot.error);
-            if(snapshot.error == "HttpException: 404") {
-              return const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error),
-                  Text("Pokemon no encontrado")
-                ],
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
- */
