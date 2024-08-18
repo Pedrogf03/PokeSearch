@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pokesearch/pokeapi/class/pokeinfo.dart';
+import 'package:pokesearch/utils/FavoriteService.dart';
 import 'package:pokesearch/utils/theme_colors.dart';
 
 import '../pokeapi/api/api_service.dart';
@@ -32,14 +33,26 @@ class _PkmnGridState extends State<PkmnGrid> {
     customUrl = null;
   }
 
+  /*
+    Metodo que se encarga de la busqueda
+    de un pokemon por su nombre
+   */
   void searchPokemon(String pokeName) {
-
     Navigator.popAndPushNamed(
       context,
       '/pkm_details',
       arguments: {'pkmn_name': pokeName.toLowerCase()},
     );
+  }
 
+  /*
+    Metodo que muestra los pokemon almacenados en favoritos
+   */
+  void getFavorites() async {
+    final favorites = await FavoritesService().getFavorites();
+    for(final favorites in favorites) {
+      print(favorites);
+    }
   }
 
   @override
@@ -95,8 +108,11 @@ class _PkmnGridState extends State<PkmnGrid> {
         ),
         IconButton(
             onPressed: () {
-              setState(() {
+              setState(()  {
                 favsOn = !favsOn;
+                if(favsOn) {
+                  getFavorites();
+                }
               });
             },
             icon: favsOn ? Icon(Icons.star, color: ThemeColors().yellow, size: 50) : Icon(Icons.star_border, color: ThemeColors().gray,  size: 50)

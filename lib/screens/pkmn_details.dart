@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pokesearch/pokeapi/class/pokeinfo.dart';
+import 'package:pokesearch/utils/FavoriteService.dart';
 
 import '../pokeapi/api/api_service.dart';
 import '../utils/theme_colors.dart';
+
 
 // Pantalla de detalles de un Pokemon
 class PkmDetails extends StatefulWidget {
@@ -20,6 +22,38 @@ class _PkmDetailsState extends State<PkmDetails> {
 
   final String title = "PokeSearch";
   late Pokeinfo pokemon;
+  bool favsOn = false;
+  late String pokemonName;
+
+  /*
+    Metodo que comprueba si el pokemon esta en favoritos
+    al iniciar la pantalla
+   */
+  void getFavorites(String pokeName) async {
+    final favorites = await FavoritesService().getFavorites();
+    if(favorites.contains(pokeName)) {
+      setState(() {
+        favsOn = true;
+      });
+    }else{
+      setState(() {
+        favsOn = false;
+      });
+    }
+  }
+
+
+  /*
+    Metodo que se usa cuando el contexto ya esta cargado para
+    poder usarlo
+   */
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    pokemonName = arguments['pkmn_name'];
+    getFavorites(pokemonName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +68,21 @@ class _PkmDetailsState extends State<PkmDetails> {
             },
             icon: const Icon(Icons.arrow_back), color: ThemeColors().yellow,
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    favsOn = !favsOn;
+                  });
+                  if(favsOn) {
+                    FavoritesService().addFavorite(pokemonName);
+                  }else{
+                    FavoritesService().removeFavorite(pokemonName);
+                  }
+                },
+                icon: favsOn ? Icon(Icons.star, color: ThemeColors().yellow, size: 25) : Icon(Icons.star_border, color: ThemeColors().yellow,  size: 25)
+            )
+          ],
           title: Text(title, style: TextStyle(color: ThemeColors().yellow)),
           backgroundColor: ThemeColors().blue
       ),
