@@ -98,13 +98,13 @@ class _PkmDetailsState extends State<PkmDetails> {
    */
   FutureBuilder<Pokeinfo> futurePokeInfo(String name) {
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-    final bool favSearch = arguments['favSearch'];
+    final bool? favSearch = arguments['favSearch'];
     return FutureBuilder(
       future: ApiService().getPokemon(name),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           pokemon = snapshot.data!;
-          if(favSearch && !favsOn) {
+          if(favSearch == true && !favsOn) {
             return SizedBox(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
