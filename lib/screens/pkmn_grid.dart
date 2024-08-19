@@ -25,8 +25,8 @@ class _PkmnGridState extends State<PkmnGrid> {
   TextEditingController search = TextEditingController();
   bool favsOn = false;
   late ApiPokemon infoPokemon;
+  late List<Pokeinfo> favorites;
   String? customUrl;
-  late List<Pokeinfo> favoritePokemon = [];
 
   @override
   void initState() {
@@ -48,13 +48,16 @@ class _PkmnGridState extends State<PkmnGrid> {
           child: Column(
             children: [
               searchBar(context),
-              futureGridPokemon()
-            ]
-          )
+              Expanded(
+                child: futureGridPokemon(),
+              ),
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
+
 
   /*
     Metodo que se encarga de la busqueda
@@ -71,14 +74,19 @@ class _PkmnGridState extends State<PkmnGrid> {
   /*
     Metodo que muestra los pokemon almacenados en favoritos
   */
-  void getFavorites() async {
+  Future<List<Pokeinfo>> getFavorites() async {
     final favorites = await FavoritesService().getFavorites();
+
+    List<Pokeinfo> favoritePokemon = [];
 
     for (final favorite in favorites) {
       final pokemon = await ApiService().getPokemon(favorite);
       favoritePokemon.add(pokemon);
     }
+
+    return favoritePokemon;
   }
+
 
   /*
     Método que recoge toda la creación y estilo de
@@ -114,10 +122,9 @@ class _PkmnGridState extends State<PkmnGrid> {
               setState(()  {
                 favsOn = !favsOn;
                 if(favsOn) {
-                  getFavorites();
-                }
-                else {
-                  favoritePokemon.clear();
+                  favorites = [];
+                } else {
+                  favorites.clear();
                 }
               });
             },
@@ -139,7 +146,7 @@ class _PkmnGridState extends State<PkmnGrid> {
       future: Future.delayed(const Duration(milliseconds: 150))
           .then((_) {
             if (favsOn) {
-              return Future.value(favoritePokemon);
+              return Future.value(getFavorites());
             } else {
             return ApiService().getPokemons(customUrl);
             }
@@ -149,6 +156,8 @@ class _PkmnGridState extends State<PkmnGrid> {
           try {
             if (!favsOn) {
               infoPokemon = snapshot.data!;
+            } else {
+              favorites = snapshot.data!;
             }
           } catch (e) {
             //ignore
@@ -164,10 +173,10 @@ class _PkmnGridState extends State<PkmnGrid> {
                       crossAxisSpacing: 8,
                       childAspectRatio: 0.6,
                     ),
-                    itemCount: favsOn ? favoritePokemon.length : infoPokemon.results.length,
+                    itemCount:  favsOn ? favorites.length : infoPokemon.results.length,
                     itemBuilder: (context, index) {
                       return FutureBuilder(
-                        future: ApiService().getPokemon(favsOn ? favoritePokemon[index].name : infoPokemon.results[index].name),
+                        future: ApiService().getPokemon(favsOn ? favorites[index].name : infoPokemon.results[index].name),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             Pokeinfo pokemon = snapshot.data!;
@@ -243,9 +252,14 @@ class _PkmnGridState extends State<PkmnGrid> {
               ),
             ),
           ),
-          Text(
-            '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
-            style: TextStyle(color: ThemeColors().yellow),
+          Row(
+            children: [
+              Text(
+                '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
+                style: TextStyle(color: ThemeColors().yellow),
+              ),
+
+            ],
           ),
         ],
       ),

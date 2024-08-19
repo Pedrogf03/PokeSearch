@@ -1,3 +1,5 @@
+import 'package:pokesearch/pokeapi/api/api_service.dart';
+import 'package:pokesearch/pokeapi/class/pokeinfo.dart';
 import 'package:pokesearch/pokeapi/class/pokemon.dart';
 
 class ApiPokemon {
@@ -22,4 +24,18 @@ class ApiPokemon {
         results: pokemonList
     );
   }
+
+  Future<List<Pokeinfo>?> pokemonAsPokeInfo() async {
+    List<Pokeinfo> pokeInfoList = [];
+
+    for (var poke in results) {
+      Pokeinfo? pokeInfo = await ApiService().getPokemon(poke.name);
+
+      pokeInfoList.add(pokeInfo);
+    }
+
+    return pokeInfoList;
+  }
+
+
 }
