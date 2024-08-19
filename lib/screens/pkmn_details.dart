@@ -118,18 +118,65 @@ class _PkmDetailsState extends State<PkmDetails> {
               ),
             );
           } else {
-            return Column(
-              children: [
-                Image.network(
-                  pokemon.sprite,
-                  width: 100,
-                  height: 100,
-                ),
-                Text(
-                  '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
-                ),
-              ],
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: 600,
+                      ),
+                      child: Card(
+                        color: ThemeColors().blue,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.network(
+                                pokemon.sprite,
+                                width: constraints.maxWidth < 600 ? constraints.maxWidth * 0.7 : 600 * 0.7,
+                                fit: BoxFit.cover,
+                              ),
+                              const SizedBox(height: 16.0),
+                              Text(
+                                '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
+                                style: TextStyle(
+                                  fontSize: 64,
+                                  color: ThemeColors().yellow,
+                                ),
+                              ),
+                              const SizedBox(height: 16.0),
+                              const Text(
+                                'Pokemon Abilities',
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8.0), // Espacio entre el título y las habilidades
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: pokemon.abilities.map((ability) {
+                                  return Text(
+                                    '${ability.name.replaceAll('-', ' ')[0].toUpperCase()}${ability.name.replaceAll('-', ' ').substring(1)}',
+                                    style: const TextStyle(fontSize: 24, color: Colors.white),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             );
+
           }
         } else if (snapshot.hasError){
           return SizedBox(

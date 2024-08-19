@@ -98,7 +98,7 @@ class _PkmnGridState extends State<PkmnGrid> {
               searchPokemon(query);
             },
             decoration: InputDecoration(
-              hintText: "Busca un Pokémon",
+              hintText: "Search for pokemon",
               suffixIcon: IconButton(
                   onPressed: () {
                     searchPokemon(search.text);
@@ -139,7 +139,7 @@ class _PkmnGridState extends State<PkmnGrid> {
       future: Future.delayed(const Duration(milliseconds: 150))
           .then((_) {
             if (favsOn) {
-              return Future.value(favoritePokemon); // Asegúrate que favoritePokemon es de tipo ApiPokemon
+              return Future.value(favoritePokemon);
             } else {
             return ApiService().getPokemons(customUrl);
             }
@@ -153,7 +153,6 @@ class _PkmnGridState extends State<PkmnGrid> {
           } catch (e) {
             //ignore
           }
-
           return Expanded(
             child: Column(
               children: [
@@ -208,7 +207,7 @@ class _PkmnGridState extends State<PkmnGrid> {
             ),
           );
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Error al cargar los datos'));
+          return const Center(child: Text('Error while fetching data'));
         } else {
           return const Center(child: CircularProgressIndicator());
         }
