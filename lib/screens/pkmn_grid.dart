@@ -32,6 +32,17 @@ class _PkmnGridState extends State<PkmnGrid> {
   void initState() {
     super.initState();
     customUrl = null;
+    favorites = []; // Inicializar como lista vacía
+    _loadFavorites(); // Cargar favoritos asíncronamente
+  }
+
+  Future<void> _loadFavorites() async {
+    try {
+      favorites = await getFavorites();
+      setState(() {});
+    } catch (e) {
+      print('Error loading favorites: $e');
+    }
   }
 
   @override
@@ -122,13 +133,16 @@ class _PkmnGridState extends State<PkmnGrid> {
               setState(()  {
                 favsOn = !favsOn;
                 if(favsOn) {
-                  favorites = [];
-                } else {
                   favorites.clear();
+                  getFavorites().then((value) {
+                    setState(() {
+                      favorites = value;
+                    });
+                  });
                 }
               });
             },
-            icon: favsOn ? Icon(Icons.star, color: ThemeColors().yellow, size: 50) : Icon(Icons.star_border, color: ThemeColors().gray,  size: 50)
+            icon: favsOn ? Icon(Icons.star, color: ThemeColors().yellow, size: 50) : Icon(Icons.star_border, color: ThemeColors().gray, size: 50)
         )
       ],
     );
@@ -146,7 +160,7 @@ class _PkmnGridState extends State<PkmnGrid> {
       future: Future.delayed(const Duration(milliseconds: 150))
           .then((_) {
             if (favsOn) {
-              return Future.value(getFavorites());
+              return getFavorites();
             } else {
             return ApiService().getPokemons(customUrl);
             }
@@ -171,7 +185,7 @@ class _PkmnGridState extends State<PkmnGrid> {
                       maxCrossAxisExtent: 400,
                       mainAxisSpacing: 8,
                       crossAxisSpacing: 8,
-                      childAspectRatio: 0.6,
+                      childAspectRatio: 0.5,
                     ),
                     itemCount:  favsOn ? favorites.length : infoPokemon.results.length,
                     itemBuilder: (context, index) {
@@ -229,6 +243,8 @@ class _PkmnGridState extends State<PkmnGrid> {
     Metodo que recoge la creacion y estilo de la carta que contiene un pokemon
    */
   Card pokemonCard(BuildContext context, Pokeinfo pokemon) {
+    final isFavorite = favorites.any((fav) => fav.name == pokemon.name);
+
     return Card(
       color: ThemeColors().blue,
       child: Column(
@@ -253,12 +269,29 @@ class _PkmnGridState extends State<PkmnGrid> {
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
                 style: TextStyle(color: ThemeColors().yellow),
               ),
-
+              IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                  color: ThemeColors().yellow,
+                ),
+                onPressed: () {
+                  setState(() {
+                    if (isFavorite) {
+                      favorites.removeWhere((fav) => fav.name == pokemon.name);
+                      FavoritesService().removeFavorite(pokemon.name);
+                    } else {
+                      favorites.add(pokemon);
+                      FavoritesService().addFavorite(pokemon.name);
+                    }
+                  });
+                },
+              ),
             ],
           ),
         ],

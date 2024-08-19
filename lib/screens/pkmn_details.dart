@@ -130,7 +130,7 @@ class _PkmDetailsState extends State<PkmDetails> {
                       child: Card(
                         color: ThemeColors().blue,
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -144,7 +144,7 @@ class _PkmDetailsState extends State<PkmDetails> {
                               Text(
                                 '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
                                 style: TextStyle(
-                                  fontSize: 64,
+                                  fontSize: 48,
                                   color: ThemeColors().yellow,
                                 ),
                               ),
