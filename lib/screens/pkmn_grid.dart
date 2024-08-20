@@ -222,29 +222,30 @@ class _PkmnGridState extends State<PkmnGrid> {
                     },
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    if (infoPokemon.previous != null)
-                      IconButton(
-                        icon: const Icon(Icons.arrow_left, size: 50),
-                        onPressed: () {
-                          setState(() {
-                            customUrl = infoPokemon.previous;
-                          });
-                        },
-                      ),
-                    if (infoPokemon.next != null)
-                      IconButton(
-                        icon: const Icon(Icons.arrow_right, size: 50),
-                        onPressed: () {
-                          setState(() {
-                            customUrl = infoPokemon.next;
-                          });
-                        },
-                      ),
-                  ],
-                )
+                if(!favsOn)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (infoPokemon.previous != null)
+                        IconButton(
+                          icon: const Icon(Icons.arrow_left, size: 50),
+                          onPressed: () {
+                            setState(() {
+                              customUrl = infoPokemon.previous;
+                            });
+                          },
+                        ),
+                      if (infoPokemon.next != null)
+                        IconButton(
+                          icon: const Icon(Icons.arrow_right, size: 50),
+                          onPressed: () {
+                            setState(() {
+                              customUrl = infoPokemon.next;
+                            });
+                          },
+                        ),
+                    ],
+                  )
               ],
             ),
           );
