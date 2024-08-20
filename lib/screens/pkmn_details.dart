@@ -157,7 +157,7 @@ class _PkmDetailsState extends State<PkmDetails> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 8.0), // Espacio entre el título y las habilidades
+                              const SizedBox(height: 8.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: pokemon.abilities.map((ability) {

@@ -32,10 +32,13 @@ class _PkmnGridState extends State<PkmnGrid> {
   void initState() {
     super.initState();
     customUrl = null;
-    favorites = []; // Inicializar como lista vacía
-    _loadFavorites(); // Cargar favoritos asíncronamente
+    favorites = [];
+    _loadFavorites();
   }
 
+  /*
+    Metodo para carga los favoritos de las shared preferences
+   */
   Future<void> _loadFavorites() async {
     try {
       favorites = await getFavorites();
@@ -68,7 +71,6 @@ class _PkmnGridState extends State<PkmnGrid> {
       ),
     );
   }
-
 
   /*
     Metodo que se encarga de la busqueda
@@ -159,11 +161,11 @@ class _PkmnGridState extends State<PkmnGrid> {
     return FutureBuilder(
       future: Future.delayed(const Duration(milliseconds: 150))
           .then((_) {
-            if (favsOn) {
-              return getFavorites();
-            } else {
-            return ApiService().getPokemons(customUrl);
-            }
+        if (favsOn) {
+          return getFavorites();
+        } else {
+          return ApiService().getPokemons(customUrl);
+        }
       }),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
