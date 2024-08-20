@@ -1,16 +1,12 @@
 # PokeSearch
 
-Prueba técnica para Pikotea Software de Pedro González Fernández
+## Descripción
 
-## Getting Started
+Esta es una aplicación multiplataforma desarrollada con Flutter que consume la API pública de Pokémon ([PokeAPI](https://pokeapi.co/)). La app está diseñada para funcionar en dispositivos Android y en la web, siguiendo las pautas de diseño de Material3.
 
-This project is a starting point for a Flutter application.
+## Características
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Splash Screen**: Pantalla inicial con un logo o animación.
+- **Pantalla Principal**: Muestra un grid de tarjetas de Pokémon. Cada tarjeta incluye una estrella para marcar el Pokémon como favorito. Tocar una tarjeta abre la pantalla de detalles del Pokémon.
+- **Pantalla de Detalles**: Muestra la foto frontal del Pokémon, su nombre, una lista de habilidades y un botón para agregar o quitar de favoritos.
+- **Filtrado**: La lista de Pokémon se puede filtrar por nombre, por favoritos o por ambos a la vez.
