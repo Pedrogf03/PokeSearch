@@ -6,7 +6,7 @@ import 'package:pokesearch/utils/theme_colors.dart';
 import '../pokeapi/api/api_service.dart';
 import '../pokeapi/class/api_pokemon.dart';
 
-// Pantalla de busqueda y filtro de pokemon
+// Pantalla para el grid con todos los pokemon
 class PkmnGrid extends StatefulWidget {
   const PkmnGrid({super.key});
 
@@ -15,10 +15,10 @@ class PkmnGrid extends StatefulWidget {
 }
 
 /*
-  Muestra una lista con todos los pokemon recogidos
-  de la api, una barra de búsqueda para buscar por
-  nombre y un icono que filtra por favoritos
-*/
+  Muestra un cuadro de busqueda, un icono para filtrar por pokemon favoritos
+  y un grid con cartas que muestran un pokemon, su nombre y si están o no
+  en favoritos.
+ */
 class _PkmnGridState extends State<PkmnGrid> {
 
   String appBarTitle = "PokeSearch";
@@ -32,12 +32,15 @@ class _PkmnGridState extends State<PkmnGrid> {
   void initState() {
     super.initState();
     customUrl = null;
+    /*
+      Inicia la lista de favoritos, sacando los que hay guardados en sharedpreferences
+     */
     favorites = [];
     _loadFavorites();
   }
 
   /*
-    Metodo para carga los favoritos de las shared preferences
+    Metodo para sacar de los shared preferences los pokemon favoritos
    */
   Future<void> _loadFavorites() async {
     try {
@@ -73,8 +76,7 @@ class _PkmnGridState extends State<PkmnGrid> {
   }
 
   /*
-    Metodo que se encarga de la busqueda
-    de un pokemon por su nombre
+    Método de busqueda de pokemon por nombre y favoritos
    */
   void searchPokemon(String pokeName) {
     Navigator.popAndPushNamed(
@@ -85,8 +87,8 @@ class _PkmnGridState extends State<PkmnGrid> {
   }
 
   /*
-    Metodo que muestra los pokemon almacenados en favoritos
-  */
+    Método para sacar de forma asincrona los favoritos
+   */
   Future<List<Pokeinfo>> getFavorites() async {
     final favorites = await FavoritesService().getFavorites();
 
@@ -100,10 +102,8 @@ class _PkmnGridState extends State<PkmnGrid> {
     return favoritePokemon;
   }
 
-
   /*
-    Método que recoge toda la creación y estilo de
-    la barra de búsqueda y filtro de favoritos
+    Muestra un cuadro de busqueda y el icono de favoritos
    */
   Row searchBar(BuildContext context) {
     return Row(
@@ -150,14 +150,10 @@ class _PkmnGridState extends State<PkmnGrid> {
     );
   }
 
-
-
   /*
-    Método que recoge toda la creacion y estilo del grid el cual
-    recoge todos los pokemon
+    Muestra un grid con las cartas de los pokemon
    */
   FutureBuilder<dynamic> futureGridPokemon() {
-
     return FutureBuilder(
       future: Future.delayed(const Duration(milliseconds: 150))
           .then((_) {
@@ -196,7 +192,28 @@ class _PkmnGridState extends State<PkmnGrid> {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             Pokeinfo pokemon = snapshot.data!;
-                            return pokemonCard(context, pokemon);
+                            return AnimatedPokemonCard(
+                              pokemon: pokemon,
+                              isFavorite: favorites.any((fav) => fav.name == pokemon.name),
+                              onToggleFavorite: () {
+                                setState(() {
+                                  if (favorites.any((fav) => fav.name == pokemon.name)) {
+                                    favorites.removeWhere((fav) => fav.name == pokemon.name);
+                                    FavoritesService().removeFavorite(pokemon.name);
+                                  } else {
+                                    favorites.add(pokemon);
+                                    FavoritesService().addFavorite(pokemon.name);
+                                  }
+                                });
+                              },
+                              onCardTapped: () {
+                                Navigator.popAndPushNamed(
+                                  context,
+                                  '/pkm_details',
+                                  arguments: {'pkmn_name': pokemon.name},
+                                );
+                              },
+                            );
                           } else {
                             return const SizedBox.shrink();
                           }
@@ -239,66 +256,112 @@ class _PkmnGridState extends State<PkmnGrid> {
       },
     );
   }
+}
 
+/*
+  Clase para las cartas de los pokemon, que maneja la animacion
+ */
+class AnimatedPokemonCard extends StatefulWidget {
+  final Pokeinfo pokemon;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
+  final VoidCallback onCardTapped;
 
-  /*
-    Metodo que recoge la creacion y estilo de la carta que contiene un pokemon
-   */
-  Card pokemonCard(BuildContext context, Pokeinfo pokemon) {
-    final isFavorite = favorites.any((fav) => fav.name == pokemon.name);
+  const AnimatedPokemonCard({
+    super.key,
+    required this.pokemon,
+    required this.isFavorite,
+    required this.onToggleFavorite,
+    required this.onCardTapped,
+  });
 
-    return Card(
-      color: ThemeColors().blue,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () {
-              Navigator.popAndPushNamed(
-                context,
-                '/pkm_details',
-                arguments: {'pkmn_name': pokemon.name},
-              );
-            },
-            icon: Center(
-              child: Image.network(
-                pokemon.sprite,
-                fit: BoxFit.contain,
-                width: MediaQuery.of(context).size.width * 0.3,
-                height: MediaQuery.of(context).size.width * 0.3,
-              ),
-            ),
-          ),
-          Row(
+  @override
+  _AnimatedPokemonCardState createState() => _AnimatedPokemonCardState();
+}
+
+/*
+  Clase que contiene la logica para la animacion
+ */
+class _AnimatedPokemonCardState extends State<AnimatedPokemonCard>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: Card(
+          color: ThemeColors().blue,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                '${pokemon.name[0].toUpperCase()}${pokemon.name.substring(1)}',
-                style: TextStyle(color: ThemeColors().yellow),
-              ),
               IconButton(
-                icon: Icon(
-                  isFavorite ? Icons.star : Icons.star_border,
-                  color: ThemeColors().yellow,
+                onPressed: widget.onCardTapped,
+                icon: Center(
+                  child: Image.network(
+                    widget.pokemon.sprite,
+                    fit: BoxFit.contain,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.width * 0.3,
+                  ),
                 ),
-                onPressed: () {
-                  setState(() {
-                    if (isFavorite) {
-                      favorites.removeWhere((fav) => fav.name == pokemon.name);
-                      FavoritesService().removeFavorite(pokemon.name);
-                    } else {
-                      favorites.add(pokemon);
-                      FavoritesService().addFavorite(pokemon.name);
-                    }
-                  });
-                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${widget.pokemon.name[0].toUpperCase()}${widget.pokemon.name.substring(1)}',
+                    style: TextStyle(color: ThemeColors().yellow),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      widget.isFavorite ? Icons.star : Icons.star_border,
+                      color: ThemeColors().yellow,
+                    ),
+                    onPressed: widget.onToggleFavorite,
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
-
 }
