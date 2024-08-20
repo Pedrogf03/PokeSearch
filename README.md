@@ -10,3 +10,6 @@ Esta es una aplicación multiplataforma desarrollada con Flutter que consume la 
 - **Pantalla Principal**: Muestra un grid de tarjetas de Pokémon. Cada tarjeta incluye una estrella para marcar el Pokémon como favorito. Tocar una tarjeta abre la pantalla de detalles del Pokémon.
 - **Pantalla de Detalles**: Muestra la foto frontal del Pokémon, su nombre, una lista de habilidades y un botón para agregar o quitar de favoritos.
 - **Filtrado**: La lista de Pokémon se puede filtrar por nombre, por favoritos o por ambos a la vez.
+
+## Descarga APK
+- [PokeSearch Android](https://drive.google.com/file/d/1zY_JC3-B97sWxiDTJa2qGO2cPanLPAkN/view?usp=sharing)
