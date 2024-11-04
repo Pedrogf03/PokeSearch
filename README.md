@@ -10,3 +10,23 @@ La app está diseñada para funcionar en dispositivos Android y a través del na
 La aplicación cuenta con una pantalla de carga al entrar en la misma.
 
 <img src="/lib/assets/splash_screen.png" alt="Splash Screen example image" width="200"/>
+
+Su función no es más que inicializar la app.
+
+### HomeScreen
+
+La pantalla de Home muestra una lista vertical scrollable de 20 Pokémon. A medida que scrolleamos van cargando los Pokémon hasta tenerlos todos.
+
+<img src="/lib/assets/home_screen.png" alt="Home Screen example image" width="200"/>
+
+Esta pantalla tiene las siguientes funcionalidades:
+
+- Búsqueda de Pokémon: Permite realizar una búsqueda de Pokémon ingresando el nombre en el cuadro de texto de la parte superior.
+
+<img src="/lib/assets/home_screen_search.png" alt="Home Screen Search example image" width="200"/>
+
+- Pokémon favoritos: Permite almacenar Pokémon en favoritos, para posteriormente filtrar por los mismos.
+
+<img src="/lib/assets/home_screen_favourites.png" alt="Home Screen Favourites example image" width="200"/>
+
+- Detalles de un Pokémon: Permite acceder a la siguiente pantalla, pulsando sobre la carta de un Pokémon.

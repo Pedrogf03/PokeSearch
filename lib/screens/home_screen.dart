@@ -30,6 +30,21 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         backgroundColor: ThemeColors().blue,
+        leading: Image.asset(
+          'lib/assets/splash_image.png',
+          fit: BoxFit.cover,
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                // TODO: Navegar a favoritos
+              },
+              icon: Icon(
+                  Icons.favorite,
+                  color: ThemeColors().yellow
+              )
+          )
+        ],
       ),
       body: BlocProvider(
         create: (context) => HomeBloc()..add(HomeEventFetchAllPokemon()),
