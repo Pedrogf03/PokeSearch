@@ -5,4 +5,8 @@ La app está diseñada para funcionar en dispositivos Android y a través del na
 
 ## Manual de uso
 
+### SplashScreen
 
+La aplicación cuenta con una pantalla de carga al entrar en la misma.
+
+![SplashScreen image](/lib/assets/splash_screen.png)
