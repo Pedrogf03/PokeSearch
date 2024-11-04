@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../blocs/home/home_bloc.dart';
 import '../blocs/home/home_event.dart';
 import '../blocs/home/home_state.dart';
@@ -10,7 +11,7 @@ class HomeScreen extends StatelessWidget {
 
   HomeScreen({super.key}) {
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100) {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100 && !HomeBloc.instance!.isSearching) {
         HomeBloc.instance?.add(HomeEventFetchAllPokemon());
       }
     });
@@ -39,7 +40,7 @@ class HomeScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                onSubmitted: (value) {
+                onChanged: (value) {
                   _handleSearch();
                 },
               ),
@@ -50,8 +51,7 @@ class HomeScreen extends StatelessWidget {
                     if (state.isLoading && state.pokemonList == null) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state.pokemonList != null) {
-                      final listToShow =
-                          state.filteredPokemonList ?? state.pokemonList!;
+                      final listToShow = state.filteredPokemonList ?? state.pokemonList!;
                       return ListView.builder(
                         controller: _scrollController,
                         itemCount: listToShow.length,
@@ -59,8 +59,16 @@ class HomeScreen extends StatelessWidget {
                           final pokemon = listToShow[index];
                           return Card(
                             child: ListTile(
-                              leading: Image.network(pokemon.imageUrl),
-                              title: Text(pokemon.name.toUpperCase()),
+                              leading: Image.network(
+                                pokemon.imageUrl,
+                                errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                                  return Image.asset(
+                                    'lib/assets/splash_image.png',
+                                    fit: BoxFit.cover,
+                                  );
+                                }
+                              ),
+                              title: Text(pokemon.name.toUpperCase().replaceAll("-", " ")),
                               trailing: IconButton(
                                 icon: const Icon(Icons.favorite_border),
                                 onPressed: () {
