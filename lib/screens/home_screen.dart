@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokesearch/blocs/home/home_bloc.dart';
+import 'package:pokesearch/blocs/home/home_event.dart';
+import 'package:pokesearch/blocs/home/home_state.dart';
+import 'package:pokesearch/screens/pokemon_screen.dart';
 import 'package:pokesearch/utils/theme_colors.dart';
 import 'package:pokesearch/widget/custom_list_title.dart';
-
-import '../blocs/home/home_bloc.dart';
-import '../blocs/home/home_event.dart';
-import '../blocs/home/home_state.dart';
 
 class HomeScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
@@ -109,8 +109,17 @@ class HomeScreen extends StatelessWidget {
                                 tileColor: ThemeColors().blue,
                                 height: 100.0,
                                 onTap: () {
-                                  // TODO: Navegar a la screen del pokemon
-                                  print("Navega a la screen del pokemon ${pokemon.name}");
+                                  // Navegar a la pantalla del Pokemon
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PokemonScreen(pokemon: pokemon),
+                                    ),
+                                  );
+                                },
+                                onDoubleTap: () {
+                                  print("Pokemon ${pokemon.name} añadido a favoritos");
+                                  // TODO: Lógica para agregar a favoritos
                                 },
                                 leading: Image.network(
                                   pokemon.imageUrl,

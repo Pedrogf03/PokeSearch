@@ -9,11 +9,11 @@ class CustomListTitle extends StatelessWidget {
   /// Optional subtitle text
   final Text? subTitle;
   /// Optional tap event handler
-  final Function? onTap;
+  final VoidCallback? onTap;
   /// Optional long press event handler
-  final Function? onLongPress;
+  final VoidCallback? onLongPress;
   /// Optional double tap event handler
-  final Function? onDoubleTap;
+  final VoidCallback? onDoubleTap;
   /// Optional trailing widget
   final Widget? trailing;
   /// Optional tile background color
@@ -42,9 +42,9 @@ class CustomListTitle extends StatelessWidget {
       ),
       color: tileColor, // Set background color if provided
       child: InkWell( // Tappable area with event handlers
-        onTap: () => onTap, // Tap event handler
-        onDoubleTap: () => onDoubleTap, // Double tap event handler
-        onLongPress: () => onLongPress, // Long press event handler
+        onTap: onTap, // Tap event handler
+        onDoubleTap: onDoubleTap, // Double tap event handler
+        onLongPress: onLongPress, // Long press event handler
         child: SizedBox( // Constrain the size of the list tile
           height: height, // Set custom height from constructor
           child: Row( // Row layout for list item content
