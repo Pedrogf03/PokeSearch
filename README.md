@@ -29,4 +29,8 @@ Esta pantalla tiene las siguientes funcionalidades:
 
 <img src="/lib/assets/home_screen_favourites.png" alt="Home Screen Favourites example image" width="200"/>
 
-- **Detalles de un Pokémon**: Permite acceder a la siguiente pantalla, pulsando sobre la carta de un Pokémon.
+- **Detalles de un Pokémon**: Permite acceder a la siguiente pantalla (PokemonScreen), pulsando sobre la carta de un Pokémon.
+
+### PokemonScreen
+
+La pantalla de Pokemon muestra los detalles de un Pokémon concreto. Desde esta pantalla también podemos añadir o quitar el mismo Pokémon de favoritos.
