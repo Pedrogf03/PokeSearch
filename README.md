@@ -21,12 +21,12 @@ La pantalla de Home muestra una lista vertical scrollable de 20 Pokémon. A medi
 
 Esta pantalla tiene las siguientes funcionalidades:
 
-- Búsqueda de Pokémon: Permite realizar una búsqueda de Pokémon ingresando el nombre en el cuadro de texto de la parte superior.
+- **Búsqueda de Pokémon**: Permite realizar una búsqueda de Pokémon ingresando el nombre en el cuadro de texto de la parte superior.
 
 <img src="/lib/assets/home_screen_search.png" alt="Home Screen Search example image" width="200"/>
 
-- Pokémon favoritos: Permite almacenar Pokémon en favoritos, para posteriormente filtrar por los mismos.
+- **Pokémon favoritos**: Permite almacenar Pokémon en favoritos, para posteriormente filtrar por los mismos.
 
 <img src="/lib/assets/home_screen_favourites.png" alt="Home Screen Favourites example image" width="200"/>
 
-- Detalles de un Pokémon: Permite acceder a la siguiente pantalla, pulsando sobre la carta de un Pokémon.
+- **Detalles de un Pokémon**: Permite acceder a la siguiente pantalla, pulsando sobre la carta de un Pokémon.
