@@ -9,4 +9,4 @@ La app está diseñada para funcionar en dispositivos Android y a través del na
 
 La aplicación cuenta con una pantalla de carga al entrar en la misma.
 
-![SplashScreen image](/lib/assets/splash_screen.png)
+<img src="/lib/assets/splash_screen.png" alt="Splash Screen example image" width="200"/>
