@@ -31,9 +31,11 @@ Esta pantalla tiene las siguientes funcionalidades:
 alt="Home Screen Search example image" 
 width="300"/>
 
-- **Pokémon favoritos**: Permite almacenar Pokémon en favoritos, para posteriormente filtrar por los mismos.
+- **Pokémon favoritos**: Permite almacenar Pokémon en favoritos pulsando en el icono o haciendo doble click sobre la carta. En el icono de la parte superior derecha se puede realizar un filtrado para mostrar los pokemon favoritos.
 
-<img src="/lib/assets/home_screen_favourites.png" alt="Home Screen Favourites example image" width="200"/>
+<img src="/lib/assets/home_screen_favourites.png"
+alt="Home Screen Favourites example image"
+width="300"/>
 
 - **Detalles de un Pokémon**: Permite acceder a la siguiente pantalla (PokemonScreen), pulsando sobre la carta de un Pokémon.
 
@@ -41,4 +43,6 @@ width="300"/>
 
 La pantalla de Pokemon muestra los detalles de un Pokémon concreto. Desde esta pantalla también podemos añadir o quitar el mismo Pokémon de favoritos.
 
-<img src="/lib/assets/pokemon_screen.png" alt="Pokemon Screen example image" width="200"/>
+<img src="/lib/assets/pokemon_screen.png"
+alt="Pokemon Screen example image"
+width="200"/>
