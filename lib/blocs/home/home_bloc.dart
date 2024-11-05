@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 
 import '../../service/pokemon_service.dart';
 import 'home_event.dart';
@@ -6,13 +7,14 @@ import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   static HomeBloc? _instance;
-  static HomeBloc? get instance => _instance;
+  static HomeBloc get instance => _instance ??= HomeBloc._();
+
+  final Logger log = Logger();
 
   int _currentOffset = 0;
   final int _pageSize = 20;
   bool _isFetching = false;
   bool _isSearching = false;
-
   bool get isSearching => _isSearching;
 
   String get name => 'HomeBloc';
@@ -41,6 +43,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       emit(state.copyWith(pokemonList: updatedList, filteredPokemonList: updatedList, isLoading: false));
     } catch (e) {
+      log.e(e);
       emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
     } finally {
       _isFetching = false;
@@ -49,8 +52,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _onSearchPokemon(HomeEventSearchPokemon event, Emitter<HomeState> emit) async {
     _isSearching = true;
-    final list = await PokemonService.fetchPokemonList(offset: 0, limit: 100000);
-    final filteredList = list.where((pkmn) => pkmn.name.toLowerCase().contains(event.query.toLowerCase().replaceAll(" ", "-"))).toList();
-    emit(state.copyWith(filteredPokemonList: filteredList));
+    try {
+      final list = await PokemonService.fetchPokemonList(offset: 0, limit: 100000);
+      final filteredList = list.where((pkmn) => pkmn.name.toLowerCase().contains(event.query.toLowerCase().replaceAll(" ", "-"))).toList();
+      emit(state.copyWith(filteredPokemonList: filteredList));
+    } catch (e) {
+      log.e(e);
+      emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
+    }
   }
 }
