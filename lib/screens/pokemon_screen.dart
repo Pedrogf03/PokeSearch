@@ -1,39 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokesearch/blocs/pokemon/pokemon_bloc.dart';
-import 'package:pokesearch/blocs/pokemon/pokemon_event.dart';
 import 'package:pokesearch/models/pokemon_model.dart';
 
+import '../blocs/home/home_bloc.dart';
+import '../blocs/home/home_event.dart';
+import '../blocs/pokemon/pokemon_bloc.dart';
+import '../blocs/pokemon/pokemon_event.dart';
 import '../blocs/pokemon/pokemon_state.dart';
 import '../service/favorite_service.dart';
 import '../utils/theme_colors.dart';
 
-class PokemonScreen extends StatelessWidget {
+class PokemonScreen extends StatefulWidget {
   final PokemonModel pokemon;
+  const PokemonScreen({super.key, required this.pokemon});
 
-  const PokemonScreen({
-    super.key,
-    required this.pokemon,
-  });
+  @override
+  State<PokemonScreen> createState() => _PokemonScreenState();
+}
+
+class _PokemonScreenState extends State<PokemonScreen> {
+
+  late bool isFav;
+
+  @override
+  void initState() {
+    isFav = HomeBloc.instance.state.favoritesPokemon != null && HomeBloc.instance.state.favoritesPokemon!.contains(widget.pokemon);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    PokemonBloc.instance.add(PokemonEventInit(pokemon));
-
+    PokemonBloc.instance.add(PokemonEventInit(widget.pokemon));
     return Scaffold(
       appBar: AppBar(
         foregroundColor: ThemeColors().yellow,
         title: Text(
-          pokemon.name.toUpperCase().replaceAll("-", " "),
+          widget.pokemon.name.toUpperCase().replaceAll("-", " "),
         ),
         backgroundColor: ThemeColors().blue,
         actions: [
           IconButton(
             onPressed: () {
-              FavoriteService.addFavorite(pokemon.name);
+              setState(() {
+                if(isFav) {
+                  FavoriteService.removeFavorite(widget.pokemon.name);
+                  HomeBloc.instance.add(HomeEventFetchFavorites());
+                } else {
+                  FavoriteService.addFavorite(widget.pokemon.name);
+                  HomeBloc.instance.add(HomeEventFetchFavorites());
+                }
+                isFav = !isFav;
+              });
             },
-            icon: const Icon(
-              Icons.favorite_border,
+            icon: Icon(
+              isFav ? Icons.favorite : Icons.favorite_border,
             ),
           ),
         ],
@@ -41,9 +61,19 @@ class PokemonScreen extends StatelessWidget {
       body: BlocBuilder<PokemonBloc, PokemonState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return DecoratedBox(
+                decoration: BoxDecoration(
+                    color: ThemeColors().gray
+                ),
+                child: Center(child: CircularProgressIndicator()),
+            );
           } else if (state.errorMessage != null) {
-            return Center(child: Text(state.errorMessage!));
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                  color: ThemeColors().gray
+              ),
+              child: Center(child: Text(state.errorMessage!)),
+            );
           } else if (state.pokemonDetails != null) {
             return DecoratedBox(
               decoration: BoxDecoration(
@@ -120,10 +150,10 @@ class PokemonScreen extends StatelessWidget {
                         Text(
                           'Abilities: ${state.pokemonDetails?.abilities != null && state.pokemonDetails!.abilities!.isNotEmpty
                               ? state.pokemonDetails!.abilities!
-                                .map((ability) => ability.replaceAll("-", " ").split(' ')
-                                .map((word) => word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '')
-                                .join(' '))
-                                .join(', ')
+                              .map((ability) => ability.replaceAll("-", " ").split(' ')
+                              .map((word) => word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '')
+                              .join(' '))
+                              .join(', ')
                               : 'N/A'}',
                           style: TextStyle(
                             color: ThemeColors().yellow,
@@ -144,6 +174,7 @@ class PokemonScreen extends StatelessWidget {
       ),
     );
   }
-
-
 }
+
+
+

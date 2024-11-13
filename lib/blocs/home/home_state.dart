@@ -5,6 +5,7 @@ class HomeState {
   final List<PokemonModel>? pokemonList;
   final List<PokemonModel>? filteredPokemonList;
   final List<PokemonModel>? favoritesPokemon;
+  final List<PokemonModel>? filteredFavoritesPokemon;
   final String? errorMessage;
 
   HomeState({
@@ -12,6 +13,7 @@ class HomeState {
     this.pokemonList,
     this.filteredPokemonList,
     this.favoritesPokemon,
+    this.filteredFavoritesPokemon,
     this.errorMessage,
   });
 
@@ -20,6 +22,7 @@ class HomeState {
     List<PokemonModel>? pokemonList,
     List<PokemonModel>? filteredPokemonList,
     List<PokemonModel>? favoritesPokemon,
+    List<PokemonModel>? filteredFavoritesPokemon,
     String? errorMessage,
   }) {
     return HomeState(
@@ -27,6 +30,7 @@ class HomeState {
       pokemonList: pokemonList ?? this.pokemonList,
       filteredPokemonList: filteredPokemonList ?? this.filteredPokemonList,
       favoritesPokemon: favoritesPokemon ?? this.favoritesPokemon,
+      filteredFavoritesPokemon: filteredFavoritesPokemon ?? this.filteredFavoritesPokemon,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }

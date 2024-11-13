@@ -45,4 +45,4 @@ La pantalla de Pokemon muestra los detalles de un Pokémon concreto. Desde esta 
 
 <img src="/lib/assets/pokemon_screen.png"
 alt="Pokemon Screen example image"
-width="200"/>
+width="300"/>

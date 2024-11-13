@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (query.isEmpty) {
       HomeBloc.instance.add(HomeEventFetchAllPokemon());
     } else {
-      HomeBloc.instance.add(HomeEventSearchPokemon(query));
+      HomeBloc.instance.add(HomeEventSearchPokemon(query, favsOn));
     }
   }
 
@@ -73,9 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 favsOn = !favsOn;
               });
-              if(favsOn) {
-                HomeBloc.instance.add(HomeEventFetchFavorites());
-              }
             },
             icon: Icon(
               favsOn ? Icons.favorite : Icons.favorite_border,
@@ -133,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (state.isLoading && state.pokemonList == null) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state.pokemonList != null) {
-                      final listToShow = favsOn ? state.favoritesPokemon! : state.filteredPokemonList ?? state.pokemonList!;
+                      final listToShow = favsOn ? state.filteredFavoritesPokemon ?? state.favoritesPokemon! : state.filteredPokemonList ?? state.pokemonList!;
                       return listToShow.isEmpty
                           ? Center(
                               child: Text(
@@ -148,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemCount: listToShow.length,
                               itemBuilder: (context, index) {
                                 final pokemon = listToShow[index];
+                                bool isFav = state.favoritesPokemon != null && state.favoritesPokemon!.contains(pokemon);
                                 return Card(
                                   color: ThemeColors().blue,
                                   child: CustomListTitle(
@@ -162,8 +160,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    onDoubleTap: () {
-                                      FavoriteService.addFavorite(pokemon.name);
+                                    onDoubleTap: () async {
+                                      setState(() {
+                                        if(isFav) {
+                                          FavoriteService.removeFavorite(pokemon.name);
+                                          HomeBloc.instance.add(HomeEventFetchFavorites());
+                                        } else {
+                                          FavoriteService.addFavorite(pokemon.name);
+                                          HomeBloc.instance.add(HomeEventFetchFavorites());
+                                        }
+                                        isFav = !isFav;
+                                      });
                                     },
                                     leading: Image.network(
                                       pokemon.imageUrl,
@@ -184,11 +191,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     trailing: IconButton(
                                       icon: Icon(
-                                        Icons.favorite_border,
+                                        isFav ? Icons.favorite : Icons.favorite_border,
                                         color: ThemeColors().yellow,
                                       ),
                                       onPressed: () {
-                                        FavoriteService.addFavorite(pokemon.name);
+                                        setState(() {
+                                          if(isFav) {
+                                            FavoriteService.removeFavorite(pokemon.name);
+                                            HomeBloc.instance.add(HomeEventFetchFavorites());
+                                          } else {
+                                            FavoriteService.addFavorite(pokemon.name);
+                                            HomeBloc.instance.add(HomeEventFetchFavorites());
+                                          }
+                                          isFav = !isFav;
+                                        });
                                       },
                                     ),
                                   ),

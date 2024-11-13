@@ -55,9 +55,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onSearchPokemon(HomeEventSearchPokemon event, Emitter<HomeState> emit) async {
     _isSearching = true;
     try {
-      final list = await PokemonService.fetchPokemonList(offset: 0, limit: 100000);
+      final list = event.favsOn
+          ? state.favoritesPokemon ?? []
+          : await PokemonService.fetchPokemonList(offset: 0, limit: 100000);
       final filteredList = list.where((pkmn) => pkmn.name.toLowerCase().contains(event.query.toLowerCase().replaceAll(" ", "-"))).toList();
-      emit(state.copyWith(filteredPokemonList: filteredList));
+      if(event.favsOn) {
+        emit(state.copyWith(filteredFavoritesPokemon: filteredList));
+      } else {
+        emit(state.copyWith(filteredPokemonList: filteredList));
+      }
     } catch (e) {
       log.e(e);
       emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
@@ -68,7 +74,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       emit(state.copyWith(isLoading: true));
       final list = await FavoriteService.getFavorites();
-      emit(state.copyWith(favoritesPokemon: list));
+      emit(state.copyWith(favoritesPokemon: list, filteredFavoritesPokemon: list, isLoading: false));
     } catch (e) {
       log.e(e);
       emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));

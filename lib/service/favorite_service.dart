@@ -30,12 +30,16 @@ class FavoriteService {
   static Future<List<PokemonModel>> getFavorites() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> pokemonNames = prefs.getStringList(_favoritesKey) ?? [];
-
     List<Future<PokemonModel>> fetchFutures = pokemonNames.map((name) {
       return PokemonService.fetchPokemon(name: name);
     }).toList();
-
     return Future.wait(fetchFutures);
+  }
+
+  static Future<bool> isFavorite(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> pokemonNames = prefs.getStringList(_favoritesKey) ?? [];
+    return pokemonNames.contains(name.toLowerCase());
   }
 
 }
