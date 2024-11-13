@@ -23,7 +23,7 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
     try {
       emit(state.copyWith(isLoading: true));
 
-      final pokemon = await PokemonService.fetchPokemonDetails(event.pokemonModel.url);
+      final pokemon = await PokemonService.fetchPokemonDetails(event.pokemonModel.id);
 
       emit(state.copyWith(isLoading: false, pokemonDetails: pokemon));
     } catch (e) {

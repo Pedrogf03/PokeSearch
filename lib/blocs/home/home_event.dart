@@ -8,3 +8,5 @@ class HomeEventSearchPokemon extends HomeEvent {
   HomeEventSearchPokemon(this.query);
 }
 
+class HomeEventFetchFavorites extends HomeEvent {}
+

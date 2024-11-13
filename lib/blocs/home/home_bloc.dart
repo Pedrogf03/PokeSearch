@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:pokesearch/service/favorite_service.dart';
 
 import '../../service/pokemon_service.dart';
 import 'home_event.dart';
@@ -24,6 +25,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc._() : super(HomeState()) {
     on<HomeEventFetchAllPokemon>(_onFetchAllPokemon);
     on<HomeEventSearchPokemon>(_onSearchPokemon);
+    on<HomeEventFetchFavorites>(_onFetchFavorites);
   }
 
   Future<void> _onFetchAllPokemon(HomeEventFetchAllPokemon event, Emitter<HomeState> emit) async {
@@ -61,4 +63,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
     }
   }
+
+  Future<void> _onFetchFavorites(HomeEventFetchFavorites event, Emitter<HomeState> emit) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final list = await FavoriteService.getFavorites();
+      emit(state.copyWith(favoritesPokemon: list));
+    } catch (e) {
+      log.e(e);
+      emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
+    }
+  }
+
 }

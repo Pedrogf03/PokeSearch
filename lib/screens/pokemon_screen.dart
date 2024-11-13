@@ -5,6 +5,7 @@ import 'package:pokesearch/blocs/pokemon/pokemon_event.dart';
 import 'package:pokesearch/models/pokemon_model.dart';
 
 import '../blocs/pokemon/pokemon_state.dart';
+import '../service/favorite_service.dart';
 import '../utils/theme_colors.dart';
 
 class PokemonScreen extends StatelessWidget {
@@ -29,7 +30,7 @@ class PokemonScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              // TODO: Añadir a favoritos
+              FavoriteService.addFavorite(pokemon.name);
             },
             icon: const Icon(
               Icons.favorite_border,

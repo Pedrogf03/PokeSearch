@@ -10,6 +10,11 @@ class PokemonService {
 
   static final Logger log = Logger();
 
+  static int getIdFromUrl(String url) {
+    final id = url.split('/')[url.split('/').length - 2];
+    return int.parse(id);
+  }
+
   static Future<List<PokemonModel>> fetchPokemonList({required int offset, required int limit}) async {
     final response = await http.get(
         Uri.parse('https://pokeapi.co/api/v2/pokemon?offset=$offset&limit=$limit'));
@@ -18,14 +23,27 @@ class PokemonService {
       log.i("Fetched Pokemon list");
       final data = json.decode(response.body);
       final List<dynamic> results = data['results'];
-      return results.map((json) => PokemonModel(name: json['name'], url: json['url'])).toList();
+      return results.map((json) => PokemonModel(name: json['name'], id: getIdFromUrl(json['url']))).toList();
     } else {
       throw Exception('Failed to load Pokémon');
     }
   }
 
-  static Future<PokemonDetails> fetchPokemonDetails(String url) async {
-    final response = await http.get(Uri.parse(url));
+  static Future<PokemonModel> fetchPokemon({required String name}) async {
+    final response = await http.get(Uri.parse('https://pokeapi.co/api/v2/pokemon/$name'));
+
+    if (response.statusCode == 200) {
+      log.i("Fetched One Pokemon");
+      final data = json.decode(response.body);
+      PokemonModel p = PokemonModel(name: data['name'], id: data['id']);
+      return p;
+    } else {
+      throw Exception('Failed to load Pokémon');
+    }
+  }
+
+  static Future<PokemonDetails> fetchPokemonDetails(int id) async {
+    final response = await http.get(Uri.parse("https://pokeapi.co/api/v2/pokemon/$id"));
 
     if (response.statusCode == 200) {
 
