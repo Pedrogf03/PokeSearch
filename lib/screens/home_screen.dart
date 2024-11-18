@@ -76,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               setState(() {
                 favsOn = !favsOn;
+                _controller.text = "";
               });
             },
             icon: Icon(

@@ -33,7 +33,7 @@ width="300"/>
 
 - **Pokémon favoritos**: Permite almacenar Pokémon en favoritos pulsando en el icono o haciendo doble click sobre la carta. En el icono de la parte superior derecha se puede realizar un filtrado para mostrar los pokemon favoritos.
 
-<img src="/lib/assets/home_screen_favourites.png"
+<img src="/lib/assets/home_screen_favourites.jpg"
 alt="Home Screen Favourites example image"
 width="300"/>
 
