@@ -51,4 +51,4 @@ width="300"/>
 
 ### Android 
 
-
+[Descarga el APK](https://github.com/Pedrogf03/PokeSearch/raw/refs/heads/v2/PokeSearch.apk)
