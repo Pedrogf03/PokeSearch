@@ -52,6 +52,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  Future<void> _onFetchFavorites(HomeEventFetchFavorites event, Emitter<HomeState> emit) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final list = await FavoriteService.getFavorites();
+      emit(state.copyWith(favoritesPokemon: list, filteredFavoritesPokemon: list, isLoading: false));
+    } catch (e) {
+      log.e(e);
+      emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
+    }
+  }
+
   Future<void> _onSearchPokemon(HomeEventSearchPokemon event, Emitter<HomeState> emit) async {
     _isSearching = true;
     try {
@@ -64,17 +75,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } else {
         emit(state.copyWith(filteredPokemonList: filteredList));
       }
-    } catch (e) {
-      log.e(e);
-      emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
-    }
-  }
-
-  Future<void> _onFetchFavorites(HomeEventFetchFavorites event, Emitter<HomeState> emit) async {
-    try {
-      emit(state.copyWith(isLoading: true));
-      final list = await FavoriteService.getFavorites();
-      emit(state.copyWith(favoritesPokemon: list, filteredFavoritesPokemon: list, isLoading: false));
     } catch (e) {
       log.e(e);
       emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));

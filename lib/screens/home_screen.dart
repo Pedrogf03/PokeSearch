@@ -6,7 +6,7 @@ import 'package:pokesearch/blocs/home/home_state.dart';
 import 'package:pokesearch/screens/pokemon_screen.dart';
 import 'package:pokesearch/service/favorite_service.dart';
 import 'package:pokesearch/utils/theme_colors.dart';
-import 'package:pokesearch/widget/custom_list_title.dart';
+import 'package:pokesearch/widgets/custom_list_title.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -45,7 +45,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleSearch() {
     final query = _controller.text.trim();
     if (query.isEmpty) {
-      HomeBloc.instance.add(HomeEventFetchAllPokemon());
+      if(favsOn) {
+        HomeBloc.instance.add(HomeEventFetchFavorites());
+      } else {
+        HomeBloc.instance.add(HomeEventFetchAllPokemon());
+      }
     } else {
       HomeBloc.instance.add(HomeEventSearchPokemon(query, favsOn));
     }
