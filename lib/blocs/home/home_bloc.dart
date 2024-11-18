@@ -46,7 +46,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(pokemonList: updatedList, filteredPokemonList: updatedList, isLoading: false));
     } catch (e) {
       log.e(e);
-      emit(state.copyWith(isLoading: false, errorMessage: 'Failed to load Pokémon'));
+      emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     } finally {
       _isFetching = false;
     }

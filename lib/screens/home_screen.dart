@@ -217,13 +217,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                             );
                     } else if (state.errorMessage != null) {
-                      return Center(child: Text(state.errorMessage!));
+                      return Center(
+                        child: Text(
+                          state.errorMessage!,
+                          style: TextStyle(
+                              color: ThemeColors().yellow
+                          ),
+                        ),
+                      );
                     } else {
                       return Center(
-                          child: Text(
-                            'No Pokémon found',
-                            style: TextStyle(color: ThemeColors().yellow),
-                          )
+                        child: Text(
+                          "No Pokemon found",
+                          style: TextStyle(
+                              color: ThemeColors().yellow
+                          ),
+                        ),
                       );
                     }
                   },
