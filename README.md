@@ -1,54 +1,54 @@
 # PokéSearch
 
-PokéSearch es una aplicación multiplataforma desarrollada en Flutter que emplea la API pública de Pokémon [PokeApi](https://pokeapi.co/).
-La app está diseñada para funcionar en dispositivos Android y a través del navegador, siguiendo las pautas de diseño de Material 3.
+PokéSearch is a cross-platform application developed in Flutter that uses the public Pokémon API [PokeApi](https://pokeapi.co/).  
+The app is designed to run on Android devices and through web browsers, following the Material 3 design guidelines.
 
-## Manual de uso
+## User Manual
 
 ### SplashScreen
 
-La aplicación cuenta con una pantalla de carga al entrar en la misma.
+The application includes a loading screen upon launch.
 
 <img src="/lib/assets/splash_screen.png" 
 alt="Splash Screen example image" 
 width="300"/>
 
-Su función no es más que inicializar la app.
+Its purpose is solely to initialize the app.
 
 ### HomeScreen
 
-La pantalla de Home muestra una lista vertical scrollable de 20 Pokémon. A medida que scrolleamos van cargando los Pokémon hasta tenerlos todos.
+The Home screen displays a vertically scrollable list of 20 Pokémon. More Pokémon load as you scroll until the entire list is displayed.
 
 <img src="/lib/assets/home_screen.png" 
 alt="Home Screen example image" 
 width="300"/>
 
-Esta pantalla tiene las siguientes funcionalidades:
+This screen includes the following features:
 
-- **Búsqueda de Pokémon**: Permite realizar una búsqueda de Pokémon ingresando el nombre en el cuadro de texto de la parte superior.
+- **Pokémon Search**: Allows users to search for Pokémon by entering the name in the text field at the top.
 
 <img src="/lib/assets/home_screen_search.png" 
 alt="Home Screen Search example image" 
 width="300"/>
 
-- **Pokémon favoritos**: Permite almacenar Pokémon en favoritos pulsando en el icono o haciendo doble click sobre la carta. En el icono de la parte superior derecha se puede realizar un filtrado para mostrar los pokemon favoritos.
+- **Favorite Pokémon**: Lets users save Pokémon to favorites by clicking the icon or double-clicking on the card. Users can filter to show only favorite Pokémon using the icon in the top-right corner.
 
 <img src="/lib/assets/home_screen_favourites.jpg"
 alt="Home Screen Favourites example image"
 width="300"/>
 
-- **Detalles de un Pokémon**: Permite acceder a la siguiente pantalla (PokemonScreen), pulsando sobre la carta de un Pokémon.
+- **Pokémon Details**: Enables navigation to the next screen (PokemonScreen) by clicking on a Pokémon card.
 
 ### PokemonScreen
 
-La pantalla de Pokemon muestra los detalles de un Pokémon concreto. Desde esta pantalla también podemos añadir o quitar el mismo Pokémon de favoritos.
+The PokemonScreen displays detailed information about a specific Pokémon. From this screen, users can also add or remove the Pokémon from their favorites list.
 
 <img src="/lib/assets/pokemon_screen.png"
 alt="Pokemon Screen example image"
 width="300"/>
 
-## Instalación
+## Installation
 
-### Android 
+### Android
 
-[Descarga el APK](https://github.com/Pedrogf03/PokeSearch/raw/refs/heads/v2/PokeSearch.apk)
+[Download the APK](https://github.com/Pedrogf03/PokeSearch/raw/refs/heads/v2/PokeSearch.apk)
